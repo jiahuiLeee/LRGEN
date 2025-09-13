@@ -1,0 +1,123 @@
+# config.yaml
+
+# General Settings
+device: cuda  # 或者 cpu
+num_epochs: 500
+batch_size: 512 # 根据实际情况调整
+learning_rate: 0.0001
+
+# Dataset Paths
+train_graph_data: "data/CRG/graph_2023Q4.pkl"
+test_graph_data: "data/CRG/graph_2024Q2.pkl"
+# train_graph_data: "data/CRG/graph_2023Q3Q4.pkl"
+# test_graph_data: "data/CRG/graph_2024Q1Q2.pkl"
+train_financial_index: "data/financial_indicators/2023_Q4_indicators_auto_log_scaled.csv"
+test_financial_index: "data/financial_indicators/2024_Q2_indicators_auto_log_scaled.csv"
+train_embedding: "data/CKG/fina_emb/2023"
+test_embedding: "data/CKG/fina_emb/2024"
+
+train_embedding_mean: "data/CKG/fina_emb/2023_mean.pt"
+test_embedding_mean: "data/CKG/fina_emb/2024_mean.pt"
+
+train_label: "data/label/2023_Q4_3_label.csv"
+test_label: "data/label/2024_Q2_3_label.csv"
+
+# Model Hyperparameters
+RGEN:
+  # TripleFusionNet
+  group: 4
+  drop_ratio: 0.6
+  in_channels: 80  # number of triples for each company subgraph
+  hidden_channels: 320
+  shufunit_out_channels: 160 # 160
+  out_kg_dim: 768
+  # fuse neighbor
+  in_rgcn_dim: 512
+  out_rel_dim: 256
+  num_relations: 5
+  num_bases: 5
+  n_layers: 1
+  # classify
+  fin_dim: 25
+  class_dim: 256
+  class_num: 3
+  # loss
+  a: 0.5
+  b: 0.5
+
+RGEN3:
+  # TripleFusionNet
+  group: 4
+  drop_ratio: 0.6
+  in_channels: 80  # number of triples for each company subgraph
+  hidden_channels: 320
+  shufunit_out_channels: 160 # 160
+  out_kg_dim: 768
+  # fuse neighbor
+  hidden_dim: 512
+  num_relations: 5
+  num_head: 8
+  num_node_type: 1
+  n_layers: 1
+  # classify
+  fin_dim: 25
+  class_dim: 256
+  class_num: 3
+
+
+MLP:
+  in_size: 18
+  hidden_size: [128, 64]
+  class_num: 2
+
+GraphSAGE:
+  in_size: 25
+  mean_ckg_insize: 793
+  hidden_size: 128
+  class_num: 3
+  n_layers: 1  
+
+RGCN:
+  in_size: 25
+  mean_ckg_insize: 793
+  hidden_size: 128
+  num_relations: 5
+  num_bases: 5
+  class_num: 3
+  n_layers: 1
+
+HGT:
+  in_size: 25
+  mean_ckg_insize: 793
+  hidden_size: 128
+  n_heads: 8
+  n_layers: 1
+  num_node_type: 1
+  num_relations: 5
+  class_num: 3
+
+THGNN:
+  num_epochs: 500
+  in_size: 25
+  class_num: 3
+  hidden_channels: 64
+  norm: False
+  use_attnFusioner: False
+  tribe_encoder_type: "gin"
+  local_layer_num: 2
+
+  path_tribe_order: "data/CKG/company_filenames.json"
+
+  train_path_x: 'data/financial_indicators/2023_Q4_indicators_auto_log_scaled.npy'
+  train_path_y: "data/label/2023_Q4_3_label.npy"
+  train_path_tribe_files: "data/CKG/json_output/2023"
+  train_path_g: "data/CRG/graph_2023Q4.bin"
+
+  test_path_x: 'data/financial_indicators/2024_Q2_indicators_auto_log_scaled.npy'
+  test_path_y: "data/label/2024_Q2_3_label.npy"
+  test_path_tribe_files: "data/CKG/json_output/2024"
+  test_path_g: "data/CRG/graph_2024Q2.bin"
+  
+  lr: 0.0001
+  a: 0.01
+  b: 1.0

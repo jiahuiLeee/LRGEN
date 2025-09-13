@@ -85,10 +85,7 @@ model = LRGEN_wo_CKG(
 
 # 损失函数
 classify_criterion = nn.CrossEntropyLoss()
-optimizer_fuse_triple_layer = torch.optim.Adam(model.parameters(), lr=config['fuse_lr'])
-optimizer_classify = torch.optim.Adam(model.parameters(), lr=config['classify_lr'])
-# 定义 ReduceLROnPlateau 调度器，监控验证集的损失，并在没有提升时减少学习率
-# scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=10, factor=0.5, verbose=True, cooldown=5)
+optimizer_classify = torch.optim.Adam(model.parameters(), lr=config['learning_rate'])
 
 # =================================================================================================================
 # 开始训练

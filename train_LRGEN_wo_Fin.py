@@ -91,15 +91,9 @@ model = LRGEN_wo_Fin(
     n_class=config['LRGEN']['class_num']
 ).to(device)
 
-# params = "/home/ljh/RGEN_B/train/logs/RGEN_20250518_161542_0.8833/best_model.pth"
-# 加载模型参数
-# model.load_state_dict(torch.load(params))
 # 损失函数
 classify_criterion = nn.CrossEntropyLoss()
-optimizer_fuse_triple_layer = torch.optim.Adam(model.parameters(), lr=config['fuse_lr'])
-optimizer_classify = torch.optim.Adam(model.parameters(), lr=config['classify_lr'])
-# 定义 ReduceLROnPlateau 调度器，监控验证集的损失，并在没有提升时减少学习率
-# scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=10, factor=0.5, verbose=True, cooldown=5)
+optimizer_classify = torch.optim.Adam(model.parameters(), lr=config['learning_rate'])
 
 # =================================================================================================================
 # 开始训练
@@ -145,7 +139,6 @@ with open(log_file, mode='w', newline='') as file:
                 last_batch = True
             # 将批次数据移到GPU
             subgraph_triple = subgraph_triple.to(device)
-            optimizer_fuse_triple_layer.zero_grad()
             optimizer_classify.zero_grad()
             out, q, _ = model(train_graph, subgraph_triple, train_fin_index_emb, last_batch, emb_list)
             emb_list.append(q.detach().to('cpu'))

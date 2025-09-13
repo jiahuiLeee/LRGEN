@@ -93,8 +93,7 @@ model = LRGEN_wo_CRG(
 
 # 损失函数
 classify_criterion = nn.CrossEntropyLoss()
-optimizer_fuse_triple_layer = torch.optim.Adam(model.parameters(), lr=config['fuse_lr'])
-optimizer_classify = torch.optim.Adam(model.parameters(), lr=config['classify_lr'])
+optimizer_classify = torch.optim.Adam(model.parameters(), lr=config['learning_rate'])
 
 
 # =================================================================================================================
@@ -141,7 +140,6 @@ with open(log_file, mode='w', newline='') as file:
                 last_batch = True
             # 将批次数据移到GPU
             subgraph_triple = subgraph_triple.to(device)
-            optimizer_fuse_triple_layer.zero_grad()
             optimizer_classify.zero_grad()
             out, q, _ = model(train_graph, subgraph_triple, train_fin_index_emb, last_batch, emb_list)
             emb_list.append(q.detach().to('cpu'))
